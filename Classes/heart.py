@@ -63,7 +63,7 @@ class Heart(Curve):
             ind_2 = indices[i + 1] + 1
             x_p = np.append(x[ind_1:ind_2], 0)
             y_p = np.append(y[ind_1:ind_2], 0)
-            plt.fill(x_p, y_p, c=colors[i])
+            plt.fill(x_p, y_p, c=colors[i], aa=True)
 
         if filename is not None:
             plt.savefig(filename)
@@ -103,7 +103,7 @@ class Heart(Curve):
             x_p = np.append(x[ind_1:ind_2], 0)
             y_p = np.append(y[ind_1:ind_2], 0)
             color = color
-            plt.fill(x_p, y_p, c=color, alpha=(i + 1) / self.number_of_pieces)
+            plt.fill(x_p, y_p, c=color, alpha=(i + 1) / self.number_of_pieces, aa=True)
 
         if filename is not None:
             plt.savefig(filename)
