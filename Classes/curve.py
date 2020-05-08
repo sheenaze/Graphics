@@ -1,11 +1,13 @@
 import numpy as np
 import math as mt
+from functions import *
+
 
 class Curve:
 
     def get_dist(self, x=None, y=None):
         """
-   
+
         Returns
         -------
         numpy array
@@ -147,3 +149,44 @@ class Curve:
         # subtracting 1, because 100% = length and the last index is length-1
         indices[-1] = indices[-1] - 1
         return indices.astype('int')
+
+    def horizontal_stripes(self, stripes_number):
+        """
+
+        Parameters
+        ----------
+        stripes_number : int
+            number of horizontal stripes for area enclosed by the curve to be divided
+
+        Returns
+        -------
+        numpy array
+            array with indices of points which enclose each strip
+
+        Remark: this method has been tested for a heart curve only;
+                numbers of strips depends on nubers of points building the figure
+
+        """
+        x = self.x
+        y = self.y
+        y_max = y.max()
+        y_min = y.min()
+        y_vector = np.linspace(y_max, y_min, stripes_number)
+        indices = []
+        for i in range(y_vector.size - 1):
+            inds = np.where((y <= y_vector[i]) & (y >= y_vector[i + 1]))[0]
+            inds = np.insert(inds, 0, inds[0] - 1)
+            if x.size - 1 not in inds:
+                inds = np.append(inds, inds[-1] + 1)
+
+            ind_inf_points = indices_of_inflection_points(y[inds])
+            inf_points_num = ind_inf_points.size
+            if inf_points_num > 1 and 0 not in inds:
+                ind1 = inds[:ind_inf_points[1] + 1]
+                ind1 = np.append(ind1, ind1[-1] + 1)
+                ind2 = inds[ind_inf_points[1] + 1:]
+                ind2 = np.insert(ind2, 0, ind2[0] - 1)
+                inds = [ind1, ind2]
+
+            indices.append(inds)
+        return np.array(indices)

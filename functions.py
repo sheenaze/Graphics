@@ -59,7 +59,7 @@ def largest_distance(x_p, y_p, x_curve, y_curve):
     return distances.max()
 
 
-def number_of_inflection_points(function_array):
+def indices_of_inflection_points(function_array):
     """
 
 
@@ -71,8 +71,8 @@ def number_of_inflection_points(function_array):
 
     Returns
     -------
-
-        DESCRIPTION.
+    numpy array
+        indices of inflection points
 
     """
     diff = np.diff(function_array)
