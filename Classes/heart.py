@@ -66,13 +66,21 @@ class Heart(Curve):
             ind_2 = indices[i + 1] + 1
             x_p = np.append(x[ind_1:ind_2], 0)
             y_p = np.append(y[ind_1:ind_2], 0)
-            plt.fill(x_p, y_p, c=colors[i], aa=True)
+            ax.fill(x_p, y_p, c=colors[i], aa=True)
 
         if filename is not None:
             plt.savefig(filename)
         plt.show()
 
-    def plot_shaded_heart(self, color, figsize, filename=None, frameon=True):
+        return ax
+
+    def plot_shaded_heart(
+            self,
+            figsize,
+            facecolor,
+            edgecolor=None,
+            filename=None,
+            frameon=True):
         """
 
         Parameters
@@ -104,26 +112,27 @@ class Heart(Curve):
             ind_2 = indices[i + 1] + 1
             x_p = np.append(x[ind_1:ind_2], 0)
             y_p = np.append(y[ind_1:ind_2], 0)
-            color = color
-            plt.fill(
-                x_p,
-                y_p,
-                c=color,
-                alpha=(
-                    i +
-                    1) /
-                self.number_of_pieces,
-                aa=True)
+
+            ax.fill(x_p, y_p, facecolor=facecolor, edgecolor=edgecolor,
+                    alpha=(i + 1) / self.number_of_pieces, aa=True)
 
         if filename is not None:
             plt.savefig(filename)
         plt.show()
 
-    def plot_horizontal_heart(self, color, figsize, filename=None, frameon=True):
+        return ax
+
+    def plot_horizontal_heart(
+            self,
+            color,
+            figsize,
+            filename=None,
+            frameon=True):
         x = self.x
         y = self.y
 
-        indices = self.horizontal_stripes(int(self.number_of_points_per_piece / 5))
+        indices = self.horizontal_stripes(
+            int(self.number_of_points_per_piece / 5))
         fig = plt.figure(figsize=figsize, frameon=frameon)
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
@@ -139,9 +148,11 @@ class Heart(Curve):
 
                 x_p = x[element]
                 y_p = y[element]
-                plt.fill(x_p, y_p, c=color, alpha=i / indices.size, lw=0)
+                ax.fill(x_p, y_p, c=color, alpha=i / indices.size, lw=0)
 
         if filename is not None:
             plt.savefig(filename)
 
         plt.show()
+
+        return ax
