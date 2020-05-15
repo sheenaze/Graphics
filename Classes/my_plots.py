@@ -30,11 +30,16 @@ class MyPlots:
         fig.subplots_adjust(hspace=vspace, wspace=hspace)
 
         for ind in range(rows_num * cols_num):
-            row = ind // cols_num
-            col = ind - cols_num * (ind // cols_num)
+            if rows_num >= cols_num:
+                row = ind // cols_num
+                col = ind - cols_num * (ind // cols_num)
+            else:
+                row = ind - cols_num * (ind // cols_num)
+                col = ind // cols_num
+
             patches = list_of_patches[ind]
 
-            if len(background_colors) > 1:
+            if type(background_colors) == list:
                 background_color = background_colors[ind]
             else:
                 background_color = background_colors
