@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 I am using matplotlib.patches library here, more info can be found on the website: https://matplotlib.org/api/patches_api.html
 """
 
+
 class Face:
     def __init__(self, radius, facecolor='yellow',
                  edgecolor='black', linewidth=2, alpha=1, hatch=None):
@@ -41,7 +42,7 @@ class Face:
                          hatch=self.hatch)
         return head
 
-    def get_eye(self, x, y, radius, facecolor, edgecolor, hatch):
+    def get_round_eye(self, x, y, radius, facecolor, edgecolor, hatch):
         """
 
         Parameters
@@ -67,8 +68,8 @@ class Face:
                         facecolor=facecolor, edgecolor=edgecolor, hatch=hatch)
         return eye
 
-    def get_mouth(self, x, y, width, height, linewidth, facecolor,
-                  hatch, edgecolor, angle=0.0, theta1=0, theta2=360):
+    def get_arc_mouth(self, x, y, width, height, linewidth, facecolor,
+                      hatch, edgecolor, angle=0.0, theta1=0, theta2=360):
         """
 
 
@@ -151,10 +152,15 @@ class Face:
         eye_y = self.radius * 0.35
         eye_radius = self.radius * 0.2
 
-        left_eye = self.get_eye(-eye_x, eye_y, eye_radius,
-                                eye_facecolor, eye_edge_color, eye_hatch)
-        right_eye = self.get_eye(eye_x, eye_y, eye_radius,
-                                 eye_facecolor, eye_edge_color, eye_hatch)
+        left_eye = self.get_round_eye(-eye_x, eye_y, eye_radius,
+                                      eye_facecolor, eye_edge_color, eye_hatch)
+        right_eye = self.get_round_eye(
+            eye_x,
+            eye_y,
+            eye_radius,
+            eye_facecolor,
+            eye_edge_color,
+            eye_hatch)
 
         smile_x = x
         smile_y = y - self.radius * 0.4
@@ -162,9 +168,17 @@ class Face:
         smile_width = self.radius * 1.2
         smile_height = self.radius * 0.7
 
-        smile = self.get_mouth(smile_x, smile_y, smile_width,
-                               smile_height, 10, mouth_facecolor, mouth_hatch,
-                               mouth_edgecolor, theta1=190, theta2=350)
+        smile = self.get_arc_mouth(
+            smile_x,
+            smile_y,
+            smile_width,
+            smile_height,
+            10,
+            mouth_facecolor,
+            mouth_hatch,
+            mouth_edgecolor,
+            theta1=190,
+            theta2=350)
 
         return [head, left_eye, right_eye, smile]
 
@@ -203,10 +217,15 @@ class Face:
         eye_y = self.radius * 0.35
         eye_radius = self.radius * 0.2
 
-        left_eye = self.get_eye(-eye_x, eye_y, eye_radius,
-                                eye_facecolor, eye_edge_color, eye_hatch)
-        right_eye = self.get_eye(eye_x, eye_y, eye_radius,
-                                 eye_facecolor, eye_edge_color, eye_hatch)
+        left_eye = self.get_round_eye(-eye_x, eye_y, eye_radius,
+                                      eye_facecolor, eye_edge_color, eye_hatch)
+        right_eye = self.get_round_eye(
+            eye_x,
+            eye_y,
+            eye_radius,
+            eye_facecolor,
+            eye_edge_color,
+            eye_hatch)
 
         smile_x = x
         smile_y = y - self.radius * 0.6
@@ -214,9 +233,17 @@ class Face:
         smile_width = self.radius * 1.2
         smile_height = self.radius * 0.7
 
-        smile = self.get_mouth(smile_x, smile_y, smile_width,
-                               smile_height, 10, mouth_facecolor, mouth_hatch,
-                               mouth_edgecolor, theta1=10, theta2=170)
+        smile = self.get_arc_mouth(
+            smile_x,
+            smile_y,
+            smile_width,
+            smile_height,
+            10,
+            mouth_facecolor,
+            mouth_hatch,
+            mouth_edgecolor,
+            theta1=10,
+            theta2=170)
 
         return [head, left_eye, right_eye, smile]
 
@@ -262,10 +289,15 @@ class Face:
         eye_y = self.radius * 0.35
         eye_radius = self.radius * 0.2
 
-        left_eye = self.get_eye(-eye_x, eye_y, eye_radius,
-                                eye_facecolor, eye_edge_color, eye_hatch)
-        right_eye = self.get_eye(eye_x, eye_y, eye_radius,
-                                 eye_facecolor, eye_edge_color, eye_hatch)
+        left_eye = self.get_round_eye(-eye_x, eye_y, eye_radius,
+                                      eye_facecolor, eye_edge_color, eye_hatch)
+        right_eye = self.get_round_eye(
+            eye_x,
+            eye_y,
+            eye_radius,
+            eye_facecolor,
+            eye_edge_color,
+            eye_hatch)
 
         smile_x = x
         smile_y = y - self.radius * 0.5
@@ -273,8 +305,16 @@ class Face:
         smile_width = self.radius * 0.5
         smile_height = self.radius * 0.5
 
-        smile = self.get_mouth(smile_x, smile_y, smile_width,
-                               smile_height, 10, mouth_facecolor, mouth_hatch,
-                               mouth_edgecolor, theta1=0, theta2=360)
+        smile = self.get_arc_mouth(
+            smile_x,
+            smile_y,
+            smile_width,
+            smile_height,
+            10,
+            mouth_facecolor,
+            mouth_hatch,
+            mouth_edgecolor,
+            theta1=0,
+            theta2=360)
 
         return [head, left_eye, right_eye, smile]
