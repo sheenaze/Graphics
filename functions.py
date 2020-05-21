@@ -4,6 +4,24 @@ import numpy as np
 import math as mt
 
 
+def rotation_matrix(fi):
+    """
+
+
+    Parameters
+    ----------
+    fi : float
+        angle in rad
+
+    Returns
+    -------
+    2x2 numpy array
+        rotation matrix
+
+    """
+    return np.array([[mt.cos(fi), -mt.sin(fi)], [mt.sin(fi), mt.cos(fi)]])
+
+
 def smallest_distance(x_p, y_p, x_curve, y_curve):
     """
 
