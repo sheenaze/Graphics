@@ -24,12 +24,12 @@ class RegularStar:
             an array of coordinates of vertices
 
         """
-        base = pt.RegularPolygon(self.center, self.num_arms, self.radius)
+        base = pt.RegularPolygon((0, 0), self.num_arms, self.radius)
         base_vertices = base.get_verts()
         sum_ang = 180 * (self.num_arms - 2)
         internal_ang = sum_ang / self.num_arms
-        fi = (internal_ang) * mt.pi / 180
-        return np.dot(rotation_matrix(fi), base_vertices.T).T
+        fi = 360 / self.num_arms / 2 * mt.pi / 180#(internal_ang) * mt.pi / 180
+        return np.dot(rotation_matrix(fi), base_vertices.T).T + self.center
 
     def get_base_arm(self):
         """
@@ -42,11 +42,12 @@ class RegularStar:
 
         """
         a = self.radius * 2 * mt.sin(mt.pi / self.num_arms)
-        return np.array([[0, 0], [a / 2, self.arm_height], [a, 0]])
+        return np.array([[self.center[0], self.center[1]],
+                         [self.center[0] + a / 2, self.center[1] + self.arm_height],
+                         [self.center[0] + a, self.center[1]]])
 
     def get_vertices(self):
         """
-
 
         Returns
         -------
