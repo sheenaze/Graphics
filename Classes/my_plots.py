@@ -11,17 +11,42 @@ class MyPlots:
         self.axs_configuration = axs_configuration
         self.frameon = frameon
 
+    def single_plot(self, patches, background_color,
+                    xlim, ylim, equal_axes=True,
+                    spines_off=True, filename=None):
+
+        fig, axs = plt.subplots(frameon=self.frameon, figsize=self.figsize)
+        for patch in patches:
+            axs.add_patch(patch)
+
+            if equal_axes:
+                axs.axis('equal')
+            axs.get_xaxis().set_visible(False)
+            axs.set_xlim(xlim)
+            axs.get_yaxis().set_visible(False)
+            axs.set_ylim(ylim)
+            axs.set_facecolor(background_color)
+
+            if spines_off:
+                axs.spines['top'].set_visible(False)
+                axs.spines['right'].set_visible(False)
+                axs.spines['bottom'].set_visible(False)
+                axs.spines['left'].set_visible(False)
+
+        if filename is not None:
+            plt.savefig(filename, facecolor=self.fig_facecolor)
+
     def plot_patches_pattern(
-                self,
-                list_of_patches,
-                background_colors,
-                xlim,
-                ylim,
-                vspace=0,
-                hspace=0,
-                equal_axes=True,
-                spines_off=True,
-                filename=None):
+            self,
+            list_of_patches,
+            background_colors,
+            xlim,
+            ylim,
+            vspace=0,
+            hspace=0,
+            equal_axes=True,
+            spines_off=True,
+            filename=None):
 
         rows_num = self.axs_configuration[0]
         cols_num = self.axs_configuration[1]
@@ -39,7 +64,7 @@ class MyPlots:
 
             patches = list_of_patches[ind]
 
-            if type(background_colors) == list:
+            if isinstance(background_colors, list):
                 background_color = background_colors[ind]
             else:
                 background_color = background_colors
@@ -60,6 +85,6 @@ class MyPlots:
                     axs[row, col].spines['right'].set_visible(False)
                     axs[row, col].spines['bottom'].set_visible(False)
                     axs[row, col].spines['left'].set_visible(False)
-                        
+
         if filename is not None:
             plt.savefig(filename, facecolor=self.fig_facecolor)

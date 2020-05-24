@@ -7,12 +7,12 @@ from functions import *
 
 
 class RegularStar:
-    def __init__(self, center, num_arms, radius, arm_height, arm_rotation=0):
+    def __init__(self, center, num_arms, radius, arm_height, star_rotation=0):
         self.center = center
         self.num_arms = num_arms
         self.radius = radius
         self.arm_height = arm_height
-        self.arm_rotation = arm_rotation
+        self.star_rotation = star_rotation
 
     def get_star_base(self):
         """
@@ -26,9 +26,9 @@ class RegularStar:
         """
         base = pt.RegularPolygon((0, 0), self.num_arms, self.radius)
         base_vertices = base.get_verts()
-        sum_ang = 180 * (self.num_arms - 2)
-        internal_ang = sum_ang / self.num_arms
-        fi = 360 / self.num_arms / 2 * mt.pi / 180#(internal_ang) * mt.pi / 180
+        # sum_ang = 180 * (self.num_arms - 2)
+        # internal_ang = sum_ang / self.num_arms
+        fi = (360 / self.num_arms / 2  + self.star_rotation) * mt.pi / 180#(internal_ang) * mt.pi / 180
         return np.dot(rotation_matrix(fi), base_vertices.T).T + self.center
 
     def get_base_arm(self):

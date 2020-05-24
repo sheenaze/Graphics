@@ -37,11 +37,11 @@ ax.axis('off')
 plt.savefig(plot_directory+filename)
 
 #%% colorful stars
-fig, ax = plt.subplots(subplot_kw={'aspect': 'equal'}, frameon=False)
-fig.set_size_inches(20, 20)
+fig, ax = plt.subplots(subplot_kw={'aspect': 'equal'}, frameon=False, figsize=(10,10))
+# fig.set_size_inches(10, 10)
 fig_facecolor = 'midnightblue'
 
-filename = 'night_sky.eps'
+filename = 'night_sky.png'
 
 NUM = 300
 
@@ -66,5 +66,6 @@ ax.set_xlim(0, 20)
 ax.set_ylim(0, 20)
 ax.get_xaxis().set_visible(False)
 ax.get_yaxis().set_visible(False)
+
 
 plt.savefig(plot_directory+filename)

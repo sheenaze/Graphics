@@ -1,6 +1,8 @@
 import matplotlib.patches as pt
 import matplotlib.pyplot as plt
-
+from Classes.other_shapes import *
+import matplotlib.path as mpath
+Path = mpath.Path
 """
 I am using matplotlib.patches library here, more info can be found on the website: https://matplotlib.org/api/patches_api.html
 """
@@ -68,6 +70,46 @@ class Face:
                         facecolor=facecolor, edgecolor=edgecolor, hatch=hatch)
         return eye
 
+    def get_eye_pupil(self, x, y, radius, edgecolor, hatch):
+        pupil = pt.Circle([x,
+                           y],
+                          radius=radius,
+                          facecolor=facecolor,
+                          edgecolor=edgecolor,
+                          hatch=hatch)
+        return pupil
+
+    def get_star_eye(self, x, y, radius, num_arms,
+                     facecolor, edgecolor, hatch, rotation):
+        """
+
+        Parameters
+        ----------
+        x : Float
+            x coordinate of the eye's center.
+        y : Float
+            y coordinate of the eye's center.
+        radius : Float
+            radius of an eye
+        num_arms : Integer
+            number of arms of a star-eye
+        facecolor : None or color
+            facecolor of an eye
+        edgecolor : None or color
+            edgececolor of an eye
+
+        Returns
+        -------
+        eye : matplotlib.patch Circle object
+
+        """
+
+        arm_height = radius * (1 + 0.2)
+        star = RegularStar((x, y), num_arms, radius, arm_height, rotation)
+        eye = pt.Polygon(star.get_vertices(), facecolor=facecolor,
+                         edgecolor=edgecolor, hatch=hatch)
+        return eye
+
     def get_arc_mouth(self, x, y, width, height, linewidth, facecolor,
                       hatch, edgecolor, angle=0.0, theta1=0, theta2=360):
         """
@@ -108,8 +150,144 @@ class Face:
 
         return mouth
 
-# %% Faces
+    def get_laughing_mouth(self, x_center, y_center,
+                           radius, linewidth, facecolor,
+                           edgecolor, hatch):
+        x0 = x_center - radius
+        y0 = y_center
+        xmax = x_center + radius
+        ymin = y_center - radius * 2
+        path = [
+            (Path.MOVETO, [x0, y0]),
+            (Path.CURVE4, [x_center, ymin]),
+            (Path.CURVE4, [xmax, y0]),
+            (Path.CURVE4, [xmax, y0]),
+            (Path.CURVE4, [x_center, ymin * 0.4]),
+            (Path.CURVE4, [x0, y0]),
+            (Path.CURVE4, [x0, y0]),
+            (Path.CLOSEPOLY, [x0, y0])]
+        codes, verts = zip(*path)
+        path = mpath.Path(verts, codes)
 
+        mouth = pt.PathPatch(path, linewidth=linewidth, facecolor=facecolor,
+                             edgecolor=edgecolor, hatch=hatch, alpha=0.9)
+
+        return mouth
+
+# %% Custom face
+
+    def custom_face(self, eye_type, mouth_type, x=0, y=0,
+                    eye_facecolor='black',
+                    eye_edge_color=None,
+                    eye_hatch=None,
+                    mouth_facecolor='black',
+                    mouth_edgecolor=None,
+                    mouth_hatch=None):
+
+        head = self.get_head(x, y)
+
+        if eye_type == 'round':
+            eye_x = self.radius * 0.35
+            eye_y = self.radius * 0.35
+            eye_radius = self.radius * 0.17
+            left_eye = self.get_round_eye(-eye_x,
+                                          eye_y,
+                                          eye_radius,
+                                          eye_facecolor,
+                                          eye_edge_color,
+                                          eye_hatch)
+            right_eye = self.get_round_eye(
+                eye_x,
+                eye_y,
+                eye_radius,
+                eye_facecolor,
+                eye_edge_color,
+                eye_hatch)
+        elif eye_type == 'star':
+            eye_x = self.radius * 0.52
+            eye_y = self.radius * 0.45
+            eye_radius = self.radius * 0.3
+            left_eye = self.get_star_eye(-eye_x,
+                                         eye_y,
+                                         eye_radius,
+                                         5,
+                                         eye_facecolor,
+                                         eye_edge_color,
+                                         eye_hatch,
+                                         15)
+            right_eye = self.get_star_eye(
+                eye_x, eye_y, eye_radius, 5, eye_facecolor, eye_edge_color, eye_hatch, -15)
+
+        if mouth_type == 'smiling_arc':
+            smile_x = x
+            smile_y = y - self.radius * 0.4
+
+            smile_width = self.radius * 1.2
+            smile_height = self.radius * 0.7
+
+            smile = self.get_arc_mouth(
+                smile_x,
+                smile_y,
+                smile_width,
+                smile_height,
+                10,
+                mouth_facecolor,
+                mouth_hatch,
+                mouth_edgecolor,
+                theta1=190,
+                theta2=350)
+
+        elif mouth_type == 'sad_arc':
+            smile_x = x
+            smile_y = y - self.radius * 0.6
+            smile_width = self.radius * 1.2
+            smile_height = self.radius * 0.7
+            smile = self.get_arc_mouth(
+                smile_x,
+                smile_y,
+                smile_width,
+                smile_height,
+                10,
+                mouth_facecolor,
+                mouth_hatch,
+                mouth_edgecolor,
+                theta1=10,
+                theta2=170)
+        elif mouth_type == 'shocked':
+            smile_x = x
+            smile_y = y - self.radius * 0.5
+
+            smile_width = self.radius * 0.5
+            smile_height = self.radius * 0.5
+
+            smile = self.get_arc_mouth(
+                smile_x,
+                smile_y,
+                smile_width,
+                smile_height,
+                10,
+                mouth_facecolor,
+                mouth_hatch,
+                mouth_edgecolor,
+                theta1=0,
+                theta2=360)
+        elif mouth_type == 'laughing':
+            smile_x = x
+            smile_y = y - self.radius * 0.15
+
+            radius = self.radius * 0.8
+            smile = self.get_laughing_mouth(
+                smile_x,
+                smile_y,
+                radius,
+                15,
+                mouth_facecolor,
+                mouth_edgecolor,
+                mouth_hatch)
+
+        return [head, left_eye, right_eye, smile]
+
+# %% Defined face
     def smiling_face(
             self,
             x=0,
@@ -318,3 +496,9 @@ class Face:
             theta2=360)
 
         return [head, left_eye, right_eye, smile]
+
+# %%
+
+
+class CatFace(Face):
+    pass

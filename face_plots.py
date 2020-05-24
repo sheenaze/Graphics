@@ -1,6 +1,8 @@
 from Classes.face import *
 from Classes.my_plots import *
-
+from Classes.my_plots import *
+from Classes.other_shapes import *
+import matplotlib.pyplot as plt
 
 # %% some general settings
 radius = 10
@@ -11,6 +13,24 @@ xlim = [-(radius + offset), radius + offset]
 ylim = [-(radius + offset), radius + offset]
 plot_directory = 'FacePlots/'
 
+# %% star-eye face
+face_color = 'yellow'
+eye_color = 'blue'
+mouth_color = 'white'
+filename = f'star_eye_laughing_face.png'
+
+face = Face(radius, face_color, linewidth=5)
+face_to_print = face.custom_face(
+    'star',
+    'laughing',
+    eye_facecolor='deepskyblue',
+    mouth_facecolor='white',
+    mouth_edgecolor='black')
+faces_plot = MyPlots(figsize, fig_facecolor, (2, 2))
+faces_plot.single_plot(face_to_print, 'white', [-15, 15], [-15, 15],
+                       filename=plot_directory + 'star_eyeface.png')
+
+plt.savefig(plot_directory + filename)
 
 # %% Pop-art 2x2 plot
 pop_art_backg_colors = ['deeppink',
