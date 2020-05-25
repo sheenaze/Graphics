@@ -28,7 +28,8 @@ class RegularStar:
         base_vertices = base.get_verts()
         # sum_ang = 180 * (self.num_arms - 2)
         # internal_ang = sum_ang / self.num_arms
-        fi = (360 / self.num_arms / 2  + self.star_rotation) * mt.pi / 180#(internal_ang) * mt.pi / 180
+        fi = (360 / self.num_arms / 2 + self.star_rotation) * \
+            mt.pi / 180  # (internal_ang) * mt.pi / 180
         return np.dot(rotation_matrix(fi), base_vertices.T).T + self.center
 
     def get_base_arm(self):
@@ -75,3 +76,36 @@ class RegularStar:
             star_verts = np.append(star_verts, arm_vertices, axis=0)
 
         return star_verts
+
+    def get_as_patch(self, facecolor=None,
+                     edgecolor=None,
+                     hatch=None,
+                     color=None):
+        vertices = self.get_vertices()
+        patch = pt.Polygon(verices, facecolor=facecolor,
+                           edgecolor=edgecolor, hatch=hatch, color=color)
+        return patch
+
+
+class HeartPatch:
+    def __init__(self, x, y, radius, facecolor='black',
+                 edgecolor=None, hatch=None):
+
+        self.arg = np.linspace(0, 2 * mt.pi, 1000)
+        self.x = radius * np.sin(self.arg)**3
+        self.y = (0.8125 * np.cos(self.arg) - 0.3125 * np.cos(2 * self.arg) -
+                  0.125 * np.cos(3 * self.arg) - 0.0625 * np.cos(4 * self.arg)) * radius
+        self.facecolor = facecolor
+        self.edgecolor = edgecolor
+        self.hatch = hatch
+
+    def get_as_patch(self, rotation=0, linewidth=0):
+        XY = np.array([self.x, self.y])
+        XY = rotation_in_place(XY.T, rotation)
+
+        patch = pt.Polygon(XY,
+                           facecolor=self.facecolor,
+                           edgecolor=self.edgecolor,
+                           hatch=self.hatch,
+                           linewidth=linewidth)
+        return patch

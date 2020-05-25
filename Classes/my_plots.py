@@ -17,7 +17,7 @@ class MyPlots:
 
         fig, axs = plt.subplots(frameon=self.frameon, figsize=self.figsize)
         for patch in patches:
-            axs.add_patch(patch)
+            axs.add_artist(patch)
 
             if equal_axes:
                 axs.axis('equal')
@@ -70,7 +70,7 @@ class MyPlots:
                 background_color = background_colors
 
             for element in patches:
-                axs[row, col].add_patch(element)
+                axs[row, col].add_artist(element)
                 if equal_axes:
                     axs[row, col].axis('equal')
 
