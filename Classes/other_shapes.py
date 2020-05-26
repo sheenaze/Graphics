@@ -82,14 +82,14 @@ class RegularStar:
                      hatch=None,
                      color=None):
         vertices = self.get_vertices()
-        patch = pt.Polygon(verices, facecolor=facecolor,
+        patch = pt.Polygon(vertices, facecolor=facecolor,
                            edgecolor=edgecolor, hatch=hatch, color=color)
         return patch
 
 
 class HeartPatch:
     def __init__(self, x, y, radius, facecolor='black',
-                 edgecolor=None, hatch=None):
+                 edgecolor=None, hatch=None, color=None):
 
         self.arg = np.linspace(0, 2 * mt.pi, 1000)
         self.x = radius * np.sin(self.arg)**3
