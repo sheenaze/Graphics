@@ -98,6 +98,7 @@ class HeartPatch:
         self.facecolor = facecolor
         self.edgecolor = edgecolor
         self.hatch = hatch
+        self.color = color
 
     def get_as_patch(self, rotation=0, linewidth=0):
         XY = np.array([self.x, self.y])
@@ -107,5 +108,6 @@ class HeartPatch:
                            facecolor=self.facecolor,
                            edgecolor=self.edgecolor,
                            hatch=self.hatch,
+                           color=self.color,
                            linewidth=linewidth)
         return patch
