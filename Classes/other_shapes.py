@@ -26,8 +26,6 @@ class RegularStar:
         """
         base = pt.RegularPolygon((0, 0), self.num_arms, self.radius)
         base_vertices = base.get_verts()
-        # sum_ang = 180 * (self.num_arms - 2)
-        # internal_ang = sum_ang / self.num_arms
         fi = (360 / self.num_arms / 2 + self.star_rotation) * \
             mt.pi / 180  # (internal_ang) * mt.pi / 180
         return np.dot(rotation_matrix(fi), base_vertices.T).T + self.center
@@ -88,12 +86,13 @@ class RegularStar:
 
 
 class HeartPatch:
-    def __init__(self, x, y, radius, facecolor='black',
+    def __init__(self, x0, y0, radius, facecolor='black',
                  edgecolor=None, hatch=None, color=None):
-
+        self.x0 = x0
+        self.y0 = y0
         self.arg = np.linspace(0, 2 * mt.pi, 1000)
-        self.x = radius * np.sin(self.arg)**3
-        self.y = (0.8125 * np.cos(self.arg) - 0.3125 * np.cos(2 * self.arg) -
+        self.x = x0 + radius * np.sin(self.arg)**3 
+        self.y = y0 + (0.8125 * np.cos(self.arg) - 0.3125 * np.cos(2 * self.arg) -
                   0.125 * np.cos(3 * self.arg) - 0.0625 * np.cos(4 * self.arg)) * radius
         self.facecolor = facecolor
         self.edgecolor = edgecolor

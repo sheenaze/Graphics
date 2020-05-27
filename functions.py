@@ -31,7 +31,10 @@ def rotation_in_place(xy_array, fi):
         Nx2 numpy array of coordinates
     fi : float
         angle in degrees
-
+    x0 : float
+        x coordinate of a initial position
+    y0 : float
+        y coordinate of a initial position
     Returns
     -------
     xy_final : numpy array

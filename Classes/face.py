@@ -11,17 +11,13 @@ on the website: https://matplotlib.org/api/patches_api.html
 
 
 class Face:
-    def __init__(
-            self,
-            radius,
-            x=0,
-            y=0,
-            facecolor='yellow',
-            edgecolor='black',
-            linewidth=2,
-            alpha=1,
-            hatch=None,
-            color=None):
+    def __init__(self, radius, x=0, y=0,
+                 facecolor='yellow',
+                 edgecolor='black',
+                 linewidth=2,
+                 alpha=1,
+                 hatch=None,
+                 color=None):
         self.x = x
         self.y = y
         self.radius = radius
@@ -53,8 +49,18 @@ class Face:
                          color=self.color)
         return head
 
-    def get_eye(self, eye_type, side, x=None, y=None, radius=None,
-                facecolor='black', edgecolor=None, color=None, hatch=None):
+    def get_eye(
+            self,
+            eye_type,
+            side,
+            x=None,
+            y=None,
+            radius=None,
+            facecolor='black',
+            edgecolor=None,
+            hatch=None,
+            color=None,
+            rotation=None):
         """
 
         Parameters
@@ -112,8 +118,7 @@ class Face:
                          theta1=10,
                          theta2=170,
                          lw=30,
-                         facecolor=facecolor,
-                         edgecolor=edgecolor,
+                         edgecolor=facecolor,
                          hatch=hatch,
                          color=color)
 
@@ -133,18 +138,21 @@ class Face:
                          theta1=190,
                          theta2=350,
                          lw=30,
-                         facecolor=facecolor,
-                         edgecolor=edgecolor,
+                         edgecolor=facecolor,
                          hatch=hatch,
                          color=color)
 
         elif eye_type == 'star':
-            if x is None and side == 'right':
+            if rotation is None and side == 'right':
                 rotation = -15
+            elif rotation is None and side == 'left':
+                rotation = 15
+
+            if x is None and side == 'right':
                 x = self.x + self.radius * 0.52
             elif x is None and side == 'left':
-                x = self.y - self.radius * 0.52
-                rotation = 15
+                x = self.x - self.radius * 0.52
+
             if y is None:
                 y = self.y + self.radius * 0.45
             if radius is None:
@@ -155,6 +163,25 @@ class Face:
             star = RegularStar((x, y), 5, radius, arm_height, rotation)
             eye = star.get_as_patch(facecolor=facecolor, edgecolor=edgecolor,
                                     hatch=hatch, color=color)
+        elif eye_type == 'heart':
+            if rotation is None and side == 'right':
+                rotation = -15
+            elif rotation is None and side == 'left':
+                rotation = 15
+
+            if x is None and side == 'right':
+                x = self.x + self.radius * 0.52
+            elif x is None and side == 'left':
+                x = self.x - self.radius * 0.52
+
+            if y is None:
+                y = self.y + self.radius * 0.45
+            if radius is None:
+                radius = self.radius * 0.5
+
+            heart = HeartPatch(x, y, radius, facecolor,
+                               edgecolor, hatch, color)
+            eye = heart.get_as_patch(rotation)
 
         return eye
 
@@ -214,7 +241,7 @@ class Face:
         return pupil
 
     def get_mouth(self, mouth_type, width=None, height=None,
-                  linewidth=10, facecolor='black', hatch=None, edgecolor=None,
+                  linewidth=10, facecolor='pink', hatch=None, edgecolor=None,
                   angle=0.0, theta1=0, theta2=360, color=None):
         """
 
@@ -256,7 +283,7 @@ class Face:
                 height = self.radius * 0.7
 
             mouth = pt.Arc([x, y], width, height, angle=angle,
-                           theta1=190, theta2=350, lw=linewidth, color=color,
+                           theta1=190, theta2=350, lw=linewidth,
                            facecolor=facecolor, edgecolor=edgecolor, hatch=hatch)
 
         elif mouth_type == 'sad_arc':
@@ -270,7 +297,7 @@ class Face:
                 height = self.radius * 0.7
 
             mouth = pt.Arc([x, y], width, height, angle=angle,
-                           theta1=10, theta2=170, lw=linewidth, color=color,
+                           theta1=10, theta2=170, lw=linewidth,
                            facecolor=facecolor, edgecolor=edgecolor, hatch=hatch)
 
         elif mouth_type == 'shocked':
@@ -283,8 +310,10 @@ class Face:
                 height = self.radius * 0.5
 
             mouth = pt.Arc([x, y], width, height, angle=angle,
-                           theta1=0, theta2=360, lw=linewidth, color=color,
+                           theta1=0, theta2=360, lw=linewidth,
                            facecolor=facecolor, edgecolor=edgecolor, hatch=hatch)
+        elif mouth_type is None:
+            mouth = pt.Circle([0, 0], radius=0)
 
         elif mouth_type == 'laughing':
             x_center = self.x
@@ -313,16 +342,34 @@ class Face:
                                  hatch=hatch, alpha=0.9)
         return mouth
 
-    def get_ear(self, shape, x, y, rotation=0, width=0, height=0,
-                linewidth=30, color='black'):
+    def get_ear(
+            self,
+            shape,
+            side,
+            x=None,
+            y=None,
+            rotation=0,
+            width=0,
+            height=0,
+            linewidth=30,
+            color='black'):
+
+        if x is None and side == 'left':
+            x = self.x - self.radius * 0.5
+        elif x is None and side == 'right':
+            x = self.x + self.radius * 0.5
+        if y is None:
+            y = self.y + self.radius * 0.65
 
         if shape == 'pointy':
-            xs = [x - width / 2, x, x + width / 2]
-            ys = [y, y + height, y]
+            xs = [x, x - width / 2, x, x + width / 2]
+            ys = [y, y, y + height, y]
             XY = rotation_in_place(np.array([xs, ys]).T, rotation)
 
-            ear = mlines.Line2D(XY[:, 0], XY[:, 1], linewidth, color=color)
-
+            ear = mlines.Line2D(XY[1:, 0], XY[1:, 1], linewidth,
+                                color=color, solid_capstyle='round')
+        elif shape is None:
+            ear = mlines.Line2D([0, 0], [0, 0], linewidth=0)
         return ear
 
     def get_nose(self, shape, radius, x=None, y=None, facecolor='black',
@@ -337,58 +384,125 @@ class Face:
             star = RegularStar([[x, y]], 5, radius, radius * 1.2, rotation)
             nose = star.get_as_patch(facecolor, edgecolor, hatch, color)
         elif shape == 'round':
-            nose = pt.Circle([x, y], radius, facecolor=facecolor, edgecolor=edgecolor,
-                             hatch=hatch, color=color)
+            nose = pt.Circle([x, y], radius, facecolor=facecolor,
+                             edgecolor=edgecolor, hatch=hatch, color=color)
         elif shape == 'heart':
             heart = HeartPatch(x, y, radius, facecolor, edgecolor, hatch)
             nose = heart.get_as_patch(rotation)
+        elif shape is None:
+            nose = pt.Circle([0, 0], radius=0)
 
         return nose
 # %% Custom face
 
-    def custom_face(self, eye_type, mouth_type, pupil_type=None,
-                    x_eye=None, y_eye=None, eye_radius=None,
-                    eye_facecolor='black',
-                    eye_edgecolor=None,
-                    eye_hatch=None,
-                    mouth_facecolor='black',
-                    mouth_lw=10,
-                    mouth_edgecolor=None,
-                    mouth_hatch=None,
-                    pupil_vert_pos='center',
-                    pupil_hor_pos='center',
-                    pupil_facecolor=None,
-                    pupil_edgecolor=None,
-                    pupil_hatch=None):
+    def custom_face(
+            self,
+            eye_type,
+            mouth_type,
+            nose_shape=None,
+            ear_shape=None,
+            pupil_type=None,
+            x_eye=None,
+            y_eye=None,
+            eye_radius=None,
+            eye_facecolor='black',
+            eye_edgecolor=None,
+            eye_hatch=None,
+            mouth_width=None,
+            mouth_height=None,
+            mouth_linewidth=10,
+            mouth_facecolor=None,
+            mouth_edgecolor=None,
+            mouth_hatch=None,
+            x_pupil=None,
+            y_pupil=None,
+            pupil_radius=0,
+            pupil_vert_pos='center',
+            pupil_hor_pos='center',
+            pupil_facecolor=None,
+            pupil_edgecolor=None,
+            pupil_hatch=None,
+            x_nose=None,
+            y_nose=None,
+            nose_radius=0,
+            nose_rotation=0,
+            nose_facecolor=None,
+            nose_edgecolor=None,
+            nose_hatch=None,
+            x_ear=None,
+            y_ear=None,
+            ear_color=None,
+            ear_width=0,
+            ear_height=0,
+            ear_linewidth=30,
+            ear_rotation=0):
 
         head = self.get_head()
-
-        left_pupil = self.get_pupil(pupil_type,
-                                    'left',
-                                    pupil_vert_pos,
-                                    pupil_hor_pos,
-                                    facecolor=pupil_facecolor,
-                                    edgecolor=pupil_edgecolor,
-                                    hatch=pupil_hatch)
-        right_pupil = self.get_pupil(pupil_type,
-                                     'right',
-                                     pupil_vert_pos,
-                                     pupil_hor_pos,
-                                     facecolor=pupil_facecolor,
-                                     edgecolor=pupil_edgecolor,
-                                     hatch=pupil_hatch)
-
         left_eye = self.get_eye(eye_type, 'left', x_eye, y_eye, eye_radius,
                                 eye_facecolor, eye_edgecolor, eye_hatch)
+
         right_eye = self.get_eye(eye_type, 'right', x_eye, y_eye, eye_radius,
                                  eye_facecolor, eye_edgecolor, eye_hatch)
+        nose = self.get_nose(nose_shape, nose_radius, x_nose, y_nose,
+                             nose_facecolor, nose_rotation, nose_edgecolor,
+                             nose_hatch)
+        left_ear = self.get_ear(
+            ear_shape,
+            'left',
+            x_ear,
+            y_ear,
+            ear_rotation,
+            ear_width,
+            ear_height,
+            ear_linewidth,
+            ear_color)
 
-        mouth = self.get_mouth(mouth_type, linewidth=mouth_lw,
-                               facecolor=mouth_facecolor,
-                               hatch=mouth_hatch,
-                               edgecolor=mouth_edgecolor)
+        right_ear = self.get_ear(
+            ear_shape,
+            'right',
+            x_ear,
+            y_ear,
+            -ear_rotation,
+            ear_width,
+            ear_height,
+            ear_linewidth,
+            ear_color)
 
-        return [head, left_eye, right_eye, mouth, right_pupil, left_pupil]
+        mouth = self.get_mouth(
+            mouth_type,
+            mouth_width,
+            mouth_height,
+            mouth_linewidth,
+            mouth_facecolor,
+            mouth_hatch,
+            mouth_edgecolor)
+
+        left_pupil = self.get_pupil(
+            pupil_type,
+            'left',
+            pupil_vert_pos,
+            pupil_hor_pos,
+            x_pupil,
+            y_pupil,
+            pupil_radius,
+            pupil_facecolor,
+            pupil_edgecolor,
+            pupil_hatch)
+
+        right_pupil = self.get_pupil(
+            pupil_type,
+            'right',
+            pupil_vert_pos,
+            pupil_hor_pos,
+            x_pupil,
+            y_pupil,
+            pupil_radius,
+            pupil_facecolor,
+            pupil_edgecolor,
+            pupil_hatch)
+
+        return [head, left_eye, right_eye, mouth, right_pupil,
+                left_pupil, nose, left_ear, right_ear]
 
 # %% Defined face
     def smiling_face(
@@ -514,7 +628,148 @@ class Face:
 class CatFace(Face):
     pass
 
-    def __init__(self, radius, x=0, y=0, facecolor='yellow',
-                 edgecolor='black', linewidth=2, alpha=1, hatch=None):
-        super().__init__(radius, x=0, y=0, facecolor='yellow',
-                         edgecolor='black', linewidth=2, alpha=1, hatch=None)
+    def __init__(self, radius, x=0, y=0, facecolor='yellow', edgecolor='black',
+                 linewidth=2, alpha=1, hatch=None, color=None):
+        super().__init__(radius, x, y, facecolor, edgecolor,
+                         linewidth, alpha, hatch, color)
+
+    def get_whiskers(
+            self,
+            side,
+            length,
+            width,
+            color,
+            number=3,
+            start_angle=15):
+
+        if side == 'left':
+            x0 = self.x - self.radius * 0.5
+            dfi = (180 - start_angle) / (number)
+        elif side == 'right':
+            x0 = self.x + self.radius * 0.5
+            dfi = (-180 - start_angle) / (number)
+        y0 = self.y + self.radius * 0.01 * number
+
+        whiskers = []
+        for ind in range(number):
+            angle = start_angle + ind * dfi
+            ends = np.array([[x0, x0], [y0, y0 + length]])
+            right_ends = rotation_in_place(ends.T, angle)
+            y0 -= self.radius * 0.02 * number
+
+            whisker = mlines.Line2D(
+                right_ends[:, 0], right_ends[:, 1], color=color,
+                linewidth=width, solid_capstyle='round')
+            whiskers.append(whisker)
+
+        return whiskers
+
+    def get_cat_face(
+            self,
+            eye_type,
+            mouth_type,
+            nose_shape,
+            ear_shape='pointy',
+            pupil_type=None,
+            x_eye=None,
+            y_eye=None,
+            eye_radius=None,
+            eye_facecolor='black',
+            eye_edgecolor=None,
+            eye_hatch=None,
+            mouth_width=None,
+            mouth_height=None,
+            mouth_linewidth=10,
+            mouth_facecolor=None,
+            mouth_edgecolor=None,
+            mouth_hatch=None,
+            x_pupil=None,
+            y_pupil=None,
+            pupil_radius=0,
+            pupil_vert_pos='center',
+            pupil_hor_pos='center',
+            pupil_facecolor=None,
+            pupil_edgecolor=None,
+            pupil_hatch=None,
+            x_nose=None,
+            y_nose=None,
+            nose_radius=0,
+            nose_rotation=0,
+            nose_facecolor=None,
+            nose_edgecolor=None,
+            nose_hatch=None,
+            x_ear=None,
+            y_ear=None,
+            ear_color=None,
+            ear_width=0,
+            ear_height=0,
+            ear_linewidth=30,
+            ear_rotation=0,
+            whiskers_number=3,
+            whiskers_length=0,
+            whiskers_width=10,
+            whiskers_color=None,
+            whiskers_start_angle=45):
+
+        face = self.custom_face(
+            eye_type,
+            mouth_type,
+            nose_shape,
+            ear_shape,
+            pupil_type,
+            x_eye,
+            y_eye,
+            eye_radius,
+            eye_facecolor,
+            eye_edgecolor,
+            eye_hatch,
+            mouth_width,
+            mouth_height,
+            mouth_linewidth,
+            mouth_facecolor,
+            mouth_edgecolor,
+            mouth_hatch,
+            x_pupil,
+            y_pupil,
+            pupil_radius,
+            pupil_vert_pos,
+            pupil_hor_pos,
+            pupil_facecolor,
+            pupil_edgecolor,
+            pupil_hatch,
+            x_nose,
+            y_nose,
+            nose_radius,
+            nose_rotation,
+            nose_facecolor,
+            nose_edgecolor,
+            nose_hatch,
+            x_ear,
+            y_ear,
+            ear_color,
+            ear_width,
+            ear_height,
+            ear_linewidth,
+            ear_rotation)
+
+        left_whiskers = self.get_whiskers(
+            'left',
+            whiskers_length,
+            whiskers_width,
+            whiskers_color,
+            whiskers_number,
+            whiskers_start_angle)
+
+        right_whiskers = self.get_whiskers(
+            'right',
+            whiskers_length,
+            whiskers_width,
+            whiskers_color,
+            whiskers_number,
+            -whiskers_start_angle)
+
+        for whisker_left, whisker_right in zip(left_whiskers, right_whiskers):
+            face.append(whisker_left)
+            face.append(whisker_right)
+
+        return face
